@@ -1,6 +1,6 @@
-package com.in28minutes.microservices.currencyexchangeservice.persistence.repositories;
+package com.ignacio.currencyexchangeservice.persistence.repositories;
 
-import com.in28minutes.microservices.currencyexchangeservice.models.Currency;
+import com.ignacio.currencyexchangeservice.models.Currency;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

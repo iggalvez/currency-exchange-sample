@@ -1,4 +1,4 @@
-package com.in28minutes.microservices.currencyexchangeservice.models;
+package com.ignacio.currencyexchangeservice.models;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

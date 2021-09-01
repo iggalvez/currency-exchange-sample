@@ -1,6 +1,6 @@
-package com.in28minutes.microservices.currencyexchangeservice.persistence.custom;
+package com.ignacio.currencyexchangeservice.persistence.custom;
 
-import com.in28minutes.microservices.currencyexchangeservice.models.CurrencyExchange;
+import com.ignacio.currencyexchangeservice.models.CurrencyExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -1,7 +1,8 @@
-package com.in28minutes.microservices.currencyexchangeservice.persistence.jpa;
+package com.ignacio.currencyexchangeservice.persistence.jpa;
 
-import com.in28minutes.microservices.currencyexchangeservice.models.CurrencyExchange;
-import com.in28minutes.microservices.currencyexchangeservice.persistence.repositories.CurrencyExchangeRepository;
+import com.ignacio.currencyexchangeservice.models.CurrencyExchange;
+import com.ignacio.currencyexchangeservice.persistence.repositories.CurrencyExchangeRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -60,7 +61,7 @@ public class JpaCurrencyExchangeRepositoryTest {
         String to = "INR";
         when(repository.findByFromAndTo(from,to))
                 .thenReturn(usdToInrCurrencyExchange);
-        assertEquals(usdToInrCurrencyExchange,
+        Assertions.assertEquals(usdToInrCurrencyExchange,
                 jpaCurrencyExchangeRepository
                 .find(from,to));
     }
@@ -70,7 +71,7 @@ public class JpaCurrencyExchangeRepositoryTest {
         Optional<CurrencyExchange> optional = Optional.of(usdToInrCurrencyExchange);
         when(repository.findById(usdToInrCurrencyExchange.getId()))
                 .thenReturn(optional);
-        assertEquals(usdToInrCurrencyExchange,jpaCurrencyExchangeRepository
+        Assertions.assertEquals(usdToInrCurrencyExchange,jpaCurrencyExchangeRepository
                 .findById(usdToInrCurrencyExchange.getId()).get());
     }
 }

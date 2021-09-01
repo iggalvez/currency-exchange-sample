@@ -1,7 +1,7 @@
-package com.in28minutes.microservices.currencyexchangeservice.persistence.custom;
+package com.ignacio.currencyexchangeservice.persistence.custom;
 
-import com.in28minutes.microservices.currencyexchangeservice.models.CurrencyExchange;
-import com.in28minutes.microservices.currencyexchangeservice.persistence.repository.IRepository;
+import com.ignacio.currencyexchangeservice.models.CurrencyExchange;
+import com.ignacio.currencyexchangeservice.persistence.repository.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;

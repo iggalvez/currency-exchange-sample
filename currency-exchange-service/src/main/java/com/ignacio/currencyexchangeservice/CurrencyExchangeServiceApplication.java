@@ -1,6 +1,6 @@
-package com.in28minutes.microservices.currencyexchangeservice;
+package com.ignacio.currencyexchangeservice;
 
-import com.in28minutes.microservices.currencyexchangeservice.models.*;
+import com.ignacio.currencyexchangeservice.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

@@ -1,8 +1,8 @@
-package com.in28minutes.microservices.currencyexchangeservice.services.currencyexchange;
+package com.ignacio.currencyexchangeservice.services.currencyexchange;
 
-import com.in28minutes.microservices.currencyexchangeservice.exceptions.CurrencyExchangeNotFoundException;
-import com.in28minutes.microservices.currencyexchangeservice.models.CurrencyExchange;
-import com.in28minutes.microservices.currencyexchangeservice.persistence.repository.IRepository;
+import com.ignacio.currencyexchangeservice.exceptions.CurrencyExchangeNotFoundException;
+import com.ignacio.currencyexchangeservice.persistence.repository.IRepository;
+import com.ignacio.currencyexchangeservice.models.CurrencyExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
-package com.in28minutes.microservices.currencyexchangeservice.controllers.currencyexchange;
+package com.ignacio.currencyexchangeservice.controllers.currencyexchange;
 
-import com.in28minutes.microservices.currencyexchangeservice.models.CurrencyExchange;
-import com.in28minutes.microservices.currencyexchangeservice.services.currencyexchange.CurrencyExchangeService;
+import com.ignacio.currencyexchangeservice.models.CurrencyExchange;
+import com.ignacio.currencyexchangeservice.services.currencyexchange.CurrencyExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

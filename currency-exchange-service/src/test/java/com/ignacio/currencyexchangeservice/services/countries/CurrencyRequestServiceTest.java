@@ -1,6 +1,6 @@
-package com.in28minutes.microservices.currencyexchangeservice.services.countries;
+package com.ignacio.currencyexchangeservice.services.countries;
 
-import com.in28minutes.microservices.currencyexchangeservice.models.Currency;
+import com.ignacio.currencyexchangeservice.models.Currency;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

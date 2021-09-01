@@ -1,4 +1,4 @@
-package com.in28minutes.microservices.currencyexchangeservice.persistence.repository;
+package com.ignacio.currencyexchangeservice.persistence.repository;
 
 import java.util.List;
 import java.util.Optional;

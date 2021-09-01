@@ -1,4 +1,4 @@
-package com.in28minutes.microservices.currencyexchangeservice.exceptions;
+package com.ignacio.currencyexchangeservice.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

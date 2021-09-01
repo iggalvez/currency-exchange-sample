@@ -1,4 +1,4 @@
-package com.in28minutes.microservices.currencyexchangeservice.controllers;
+package com.ignacio.currencyexchangeservice.controllers;
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;

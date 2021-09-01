@@ -13,14 +13,26 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
-
+/**
+ * @author Ignacio Galvez
+ */
 @Service
 public class CurrencyExchangeRequestService {
 
     private static Logger logger = LoggerFactory.getLogger(CurrencyExchangeRequestService.class);
+
     @Autowired
     private RequestValidatorService requestValidatorService;
 
+    /**
+     *
+     * @param newCurrencyExchange to be created
+     * @param currentCurrencyExchange if it is null then the creation succeeds if not the
+     *                                there's an existing CurrencyExchange with the newCurrencyExchange
+     *                                values in the database
+     * @param conversionMultiple      the new ConversionMultiple to be validated
+     * @return
+     */
     public ResponseEntity<CurrencyExchange> makeCurrencyExchangeCreatedResponse
             (CurrencyExchange newCurrencyExchange, CurrencyExchange currentCurrencyExchange,
              BigDecimal conversionMultiple) {
@@ -32,7 +44,15 @@ public class CurrencyExchangeRequestService {
         return doReturnCurrencyExchangeCreated(newCurrencyExchange);
     }
 
-    public ResponseEntity<CurrencyExchange> updateResponse(CurrencyExchange currencyExchange, BigDecimal conversionMultiple) {
+    /**
+     *
+     * @param currencyExchange the currency to update if is not present
+     *                         in the database is null
+     * @param conversionMultiple the new conversionMultiple
+     * @return
+     */
+    public ResponseEntity<CurrencyExchange> updateResponse(CurrencyExchange currencyExchange,
+                                                           BigDecimal conversionMultiple) {
         if (!requestValidatorService.currencyExchangeExists(currencyExchange)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -41,6 +61,7 @@ public class CurrencyExchangeRequestService {
         }
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
 
     private ResponseEntity<CurrencyExchange> doReturnCurrencyExchangeCreated(CurrencyExchange currencyExchange) {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().
@@ -54,6 +75,11 @@ public class CurrencyExchangeRequestService {
         return ResponseEntity.ok().body(currencyExchangeList);
     }
 
+    /**
+     *
+     * @param currencyExchange the CurrencyExchange successfully retrieve from the database
+     * @return the response with Ok status of success and the ExchangeCurrency
+     */
     public ResponseEntity<CurrencyExchange> findOk(CurrencyExchange currencyExchange) {
         return ResponseEntity.ok().body(currencyExchange);
     }

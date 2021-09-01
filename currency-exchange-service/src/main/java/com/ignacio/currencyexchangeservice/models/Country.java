@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
+/**
+ * @author Ignacio Galvez
+ */
 @Entity
 public class Country extends CurrencyIssuer {
 
@@ -17,13 +20,21 @@ public class Country extends CurrencyIssuer {
     @OneToMany(fetch = FetchType.LAZY)
     private Set<RegionalInternationalUnit> treaties;
 
+    /**
+     * set of currencies legally accepted in the country
+     */
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Currency> officialCurrencies;
 
-
+    /**
+     * languages spoken in the country which are also
+     * adopted as official
+     */
     @OneToMany
     private Set<Language> officialLanguages;
-
+    /**
+     * Surface of the Country's territory
+     */
     @Column(name = "surface_in_squared_km")
     private BigDecimal surfaceInSquaredKm;
 

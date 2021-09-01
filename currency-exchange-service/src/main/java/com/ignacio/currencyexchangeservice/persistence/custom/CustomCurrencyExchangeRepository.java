@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Repository that uses javax.persistence.EntityManager
+ */
+
 @Component
 @Primary
 public class CustomCurrencyExchangeRepository implements IRepository<CurrencyExchange, Long> {
@@ -26,6 +30,10 @@ public class CustomCurrencyExchangeRepository implements IRepository<CurrencyExc
 
     @Override
     @Transactional
+    /**
+     * @param args must consist on two Strings the first one is from
+     *             and the second is the to
+     */
     public CurrencyExchange find(String... args) {
         String queryString =
                 "from CurrencyExchange where currency_from="

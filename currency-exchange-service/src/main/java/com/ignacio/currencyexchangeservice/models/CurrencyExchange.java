@@ -6,17 +6,33 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
+/**
+ * @author Ignacio Galvez
+ */
 @Entity
 public class CurrencyExchange {
     @Id
     @GeneratedValue
     private Long id;
+    /**
+     * The currency symbol to convert from
+     */
     @Column(name = "currency_from", nullable = false)
     private String from;
+    /**
+     * The currency symbol to convert to
+     */
     @Column(name = "currency_to", nullable = false)
     private String to;
+    /**
+     * The value of one unit of from currency in to currency
+     */
     @Column(name = "conversion_multiple",nullable = false)
     private BigDecimal conversionMultiple;
+    /**
+     * additional environment info such as the port
+     * where the CurrencyExchange Service is running
+     */
     private String environment;
 
     public CurrencyExchange() {

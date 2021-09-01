@@ -4,21 +4,31 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
+/**
+ * @author Ignacio Galvez
+ */
+
 @Entity
 public class Continent {
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false,unique = true)
+    @Column(unique = true)
     private String name;
 
+    /**
+     * set of international treaties
+     * which includes countries of the continent
+     */
     @OneToMany(fetch = FetchType.LAZY)
     private Set<RegionalInternationalUnit> continentalTreaties;
 
     @OneToMany
     private Set<Country> countries;
-
+    /**
+     * Total Continent Territorial Surface
+     */
     @Column(name = "surface_in_squared_km")
     private BigDecimal surfaceInSquaredKm;
 

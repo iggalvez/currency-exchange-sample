@@ -19,159 +19,171 @@ import static java.lang.Math.pow;
 
 @SpringBootApplication
 public class CurrencyExchangeServiceApplication implements CommandLineRunner {
-	@PersistenceContext
-	private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-	private final Logger logger = LoggerFactory.getLogger(CurrencyExchangeServiceApplication.class);
-	public static void main(String[] args) {
-		SpringApplication.run(CurrencyExchangeServiceApplication.class, args);
-	}
+    private final Logger logger = LoggerFactory.getLogger(CurrencyExchangeServiceApplication.class);
 
-	@Override
-	@Transactional
-	public void run(String... args) throws Exception {
-		Country brazil = createBrazil();
-		Country  argentina =createArgentina();
+    public static void main(String[] args) {
+        SpringApplication.run(CurrencyExchangeServiceApplication.class, args);
+    }
 
-		Country paraguay = createParaguay();
-		Country uruguay = createUruguay();
-		Set<Country> countries = generateParameterList(brazil, argentina, paraguay, uruguay);
-		RegionalInternationalUnit unit = createRegionalUnit(countries);
-		entityManager.persist(unit);
-		entityManager.close();
-	}
+    /**
+     * Harcoded data to the database
+     * for fast testing the database work only
+     *
+     * @param args
+     * @throws Exception
+     */
+    @Override
+    @Transactional
+    public void run(String... args) throws Exception {
+        DatabaseHardCoder hardCoder = new DatabaseHardCoder();
+        Country brazil = hardCoder.createBrazil();
+        Country argentina = hardCoder.createArgentina();
 
+        Country paraguay = hardCoder.createParaguay();
+        Country uruguay = hardCoder.createUruguay();
+        Set<Country> countries = hardCoder.generateParameterList(brazil, argentina, paraguay, uruguay);
+        RegionalInternationalUnit unit = hardCoder.createRegionalUnit(countries);
+        entityManager.persist(unit);
+        entityManager.close();
+    }
 
-	private Set<Country> generateParameterList(Country brazil, Country argentina, Country paraguay, Country uruguay) {
-		Set<Country> countries = new HashSet<>();
-		countries.add(argentina);
-		countries.add(brazil);
-		countries.add(paraguay);
-		countries.add(uruguay);
-		return countries;
-	}
-
-	private RegionalInternationalUnit createRegionalUnit(Set<Country> countries) {
-		Continent continent = crateContinent(countries);
-		RegionalInternationalUnit unit = new RegionalInternationalUnit();
-		doGenerateInternationalUnit(countries, continent, unit);
-		return unit;
-	}
+    private class DatabaseHardCoder {
 
 
-	private Continent crateContinent(Set<Country> countries) {
-		Continent continent = new Continent();
-		continent.setName("Sudamerica");
-		continent.setCountries(countries);
-		continent.setSurfaceInSquaredKm(BigDecimal.valueOf(3*pow(10,5)));
-		entityManager.persist(continent);
-		return continent;
-	}
+        public Set<Country> generateParameterList(Country brazil, Country argentina, Country paraguay, Country uruguay) {
+            Set<Country> countries = new HashSet<>();
+            countries.add(argentina);
+            countries.add(brazil);
+            countries.add(paraguay);
+            countries.add(uruguay);
+            return countries;
+        }
 
-	private void doGenerateInternationalUnit(Set<Country> countries, Continent continent, RegionalInternationalUnit unit) {
-		Set<Continent> continents = new HashSet<>();
-		continents.add(continent);
-		unit.setContinents(continents);
-		unit.setCountries(countries);
-		unit.setName("Mercosur");
-		unit.setSigningDate(LocalDate.of(1994,03,10));
-		unit.setUnitFormalStart(LocalDate.of(1994,5,10));
-		unit.setExpirationDate(LocalDate.of(3022,5,10));
-
-		//entityManager.persist(unit);
-	}
-
-	private Country createUruguay() {
-		Language language = new Language("Castellano", "CS", new HashSet<>());
-		Currency currency = new Currency("URY","Peso uruguayo",null);
-		Country uruguay = createCountry(language,currency,"Uruguay",3*pow(10,6),
-				BigDecimal.valueOf(5000));
-		return uruguay;
-	}
-
-	private Country createBrazil() {
-		Language language = new Language("Portuguese", "PT", new HashSet<>());
-		Currency currency = new Currency("REAL","Real",null);
-		Country brazil = createCountry(language,currency,"Brazil",pow(10,8),
-				BigDecimal.valueOf(3*pow(10,4)));
-		return brazil;
-	}
-
-	private Country createParaguay() {
-		Language language = new Language("Guarani", "GR", new HashSet<>());
-		Currency currency = new Currency("GR","Guarani",null);
-		Country paraguay = createCountry(language,currency,"Brazil",pow(10,8),
-				BigDecimal.valueOf(8000));
-		return paraguay;
-	}
-
-	private Country createCountry(Language language, Currency currency, String countryName,
-								  double population,
-								  BigDecimal surface) {
-		Set<Language> languages = new HashSet<>();
-		Set<Currency> currencies = new HashSet<>();
-		Country country = create(language, currency, countryName, population, surface, languages, currencies);
-		return country;
-	}
+        public RegionalInternationalUnit createRegionalUnit(Set<Country> countries) {
+            Continent continent = crateContinent(countries);
+            RegionalInternationalUnit unit = new RegionalInternationalUnit();
+            doGenerateInternationalUnit(countries, continent, unit);
+            return unit;
+        }
 
 
-	private Country create(Language language, Currency currency, String countryName, double population, BigDecimal surface, Set<Language> languages, Set<Currency> currencies) {
-		languages.add(language);
-		logger.info("language = " + language);
-		Country country = generateCountry(currency, languages,
-				currencies, countryName, population,
-				surface);
-		setLogAndPersist(language, currency, languages, country);
-		return country;
-	}
+        private Continent crateContinent(Set<Country> countries) {
+            Continent continent = new Continent();
+            continent.setName("Sudamerica");
+            continent.setCountries(countries);
+            continent.setSurfaceInSquaredKm(BigDecimal.valueOf(3 * pow(10, 5)));
+            entityManager.persist(continent);
+            return continent;
+        }
 
-	private void setLogAndPersist(Language language, Currency currency, Set<Language> languages, Country country) {
-		setIssuerCountry(language, currency, country);
-		doSetLanguages(languages, country);
-		doLog(language, currency, country);
-		persistCountry(language, currency, country);
-	}
+        private void doGenerateInternationalUnit(Set<Country> countries, Continent continent, RegionalInternationalUnit unit) {
+            Set<Continent> continents = new HashSet<>();
+            continents.add(continent);
+            unit.setContinents(continents);
+            unit.setCountries(countries);
+            unit.setName("Mercosur");
+            unit.setSigningDate(LocalDate.of(1994, 03, 10));
+            unit.setUnitFormalStart(LocalDate.of(1994, 5, 10));
+            unit.setExpirationDate(LocalDate.of(3022, 5, 10));
 
-	private void doSetLanguages(Set<Language> languages, Country country) {
-		country.setLanguages(languages);
-		country.setOfficialLanguages(languages);
-	}
+            //entityManager.persist(unit);
+        }
 
-	private void doLog(Language language, Currency currency, Country country) {
-		logger.info("language = " + language);
-		logger.info("country = " + country);
-		logger.info("currency = " + currency);
-	}
+        public Country createUruguay() {
+            Language language = new Language("Castellano", "CS", new HashSet<>());
+            Currency currency = new Currency("URY", "Peso uruguayo", null);
+            Country uruguay = createCountry(language, currency, "Uruguay", 3 * pow(10, 6),
+                    BigDecimal.valueOf(5000));
+            return uruguay;
+        }
 
-	private void setIssuerCountry(Language language, Currency currency, Country country) {
-		currency.setCurrencyIssuer(country);
-		language.getCountries().add(country);
-	}
+        public Country createBrazil() {
+            Language language = new Language("Portuguese", "PT", new HashSet<>());
+            Currency currency = new Currency("REAL", "Real", null);
+            Country brazil = createCountry(language, currency, "Brazil", pow(10, 8),
+                    BigDecimal.valueOf(3 * pow(10, 4)));
+            return brazil;
+        }
+
+        public Country createParaguay() {
+            Language language = new Language("Guarani", "GR", new HashSet<>());
+            Currency currency = new Currency("GR", "Guarani", null);
+            Country paraguay = createCountry(language, currency, "Brazil", pow(10, 8),
+                    BigDecimal.valueOf(8000));
+            return paraguay;
+        }
+
+        private Country createCountry(Language language, Currency currency, String countryName,
+                                      double population,
+                                      BigDecimal surface) {
+            Set<Language> languages = new HashSet<>();
+            Set<Currency> currencies = new HashSet<>();
+            Country country = create(language, currency, countryName, population, surface, languages, currencies);
+            return country;
+        }
 
 
-	private Country generateCountry(Currency currency, Set<Language> languages, Set<Currency> currencies, String countryName,
-									double pow, BigDecimal bigDecimal) {
+        private Country create(Language language, Currency currency, String countryName, double population, BigDecimal surface, Set<Language> languages, Set<Currency> currencies) {
+            languages.add(language);
+            logger.info("language = " + language);
+            Country country = generateCountry(currency, languages,
+                    currencies, countryName, population,
+                    surface);
+            setLogAndPersist(language, currency, languages, country);
+            return country;
+        }
 
-		Country country = new Country(countryName, BigDecimal.valueOf(pow),
-				languages, null, currencies, languages,
-				bigDecimal, currency);
-		currency.setCurrencyIssuer(country);
-		country.setOfficialIssuedCurrency(currency);
+        private void setLogAndPersist(Language language, Currency currency, Set<Language> languages, Country country) {
+            setIssuerCountry(language, currency, country);
+            doSetLanguages(languages, country);
+            doLog(language, currency, country);
+            persistCountry(language, currency, country);
+        }
 
-		return country;
-	}
+        private void doSetLanguages(Set<Language> languages, Country country) {
+            country.setLanguages(languages);
+            country.setOfficialLanguages(languages);
+        }
 
-	private Country createArgentina(){
-		Language language = new Language("Castellano", "CS", new HashSet<>());
-		Currency currency = new Currency("ARS","Pesos Argentinos",null);
-		Country argentina = createCountry(language,currency,"Argentina",48*pow(10,6),
-				BigDecimal.valueOf(2*pow(10,4)));
-		return argentina;
-	}
+        private void doLog(Language language, Currency currency, Country country) {
+            logger.info("language = " + language);
+            logger.info("country = " + country);
+            logger.info("currency = " + currency);
+        }
 
-	private void persistCountry(Language language, Currency currency, Country country) {
-		entityManager.persist(language);
-		entityManager.persist(currency);
-		entityManager.persist(country);
-	}
+        private void setIssuerCountry(Language language, Currency currency, Country country) {
+            currency.setCurrencyIssuer(country);
+            language.getCountries().add(country);
+        }
+
+
+        private Country generateCountry(Currency currency, Set<Language> languages, Set<Currency> currencies, String countryName,
+                                        double pow, BigDecimal bigDecimal) {
+
+            Country country = new Country(countryName, BigDecimal.valueOf(pow),
+                    languages, null, currencies, languages,
+                    bigDecimal, currency);
+            currency.setCurrencyIssuer(country);
+            country.setOfficialIssuedCurrency(currency);
+
+            return country;
+        }
+
+        public Country createArgentina() {
+            Language language = new Language("Castellano", "CS", new HashSet<>());
+            Currency currency = new Currency("ARS", "Pesos Argentinos", null);
+            Country argentina = createCountry(language, currency, "Argentina", 48 * pow(10, 6),
+                    BigDecimal.valueOf(2 * pow(10, 4)));
+            return argentina;
+        }
+
+        private void persistCountry(Language language, Currency currency, Country country) {
+            entityManager.persist(language);
+            entityManager.persist(currency);
+            entityManager.persist(country);
+        }
+    }
 }

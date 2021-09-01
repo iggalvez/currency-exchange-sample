@@ -2,6 +2,9 @@ package com.ignacio.currencyexchangeservice.models;
 
 import javax.persistence.*;
 
+/**
+ * @author Ignacio Galvez
+ */
 @Entity
 public class Currency {
 
@@ -14,7 +17,9 @@ public class Currency {
 
     @Column(nullable = false)
     private String denomination;
-
+    /**
+     * The official issuer of the Currency
+     */
     @OneToOne(fetch = FetchType.LAZY)
     private CurrencyIssuer currencyIssuer;
 

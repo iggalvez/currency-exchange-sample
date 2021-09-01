@@ -13,6 +13,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Ignacio Galvez
+ * Service That communicates the Database with
+ * the CurrencyExchangeController
+ */
+
+
 @Component
 public class CurrencyExchangeService {
 
@@ -28,12 +35,21 @@ public class CurrencyExchangeService {
     @Autowired
     private Environment environment;
 
+    /**
+     *
+     * @param from the symbol of the currency to convert from
+     * @param to the symbol of the currency to convert to
+     * @return The response with the CurrencyExchange searched or not found
+     */
     public ResponseEntity<CurrencyExchange> findCurrencyExchange(String from, String to){
         CurrencyExchange currencyExchange = getCurrencyExchange(from, to);
         setPortEnvironment(currencyExchange);
         return requestService.findOk(currencyExchange);
     }
-
+    /**
+     *
+     * @return All the CurrencyExchanges present in the Application
+     */
     public ResponseEntity<List<CurrencyExchange>> findAll() {
         List<CurrencyExchange> currencyExchangeList = repository.findAll();
         setEnvironmentPortToAll(currencyExchangeList);
@@ -41,6 +57,12 @@ public class CurrencyExchangeService {
         return listResponseEntity;
     }
 
+    /**
+     * deletes the currencyExchange with the id specified
+     * Throws a CurrencyExchangeNotFoundException if the object is not
+     * in the database
+     * @param id the id of the CurrencyExchange to delete from the database
+     */
     public void deleteCurrencyExchange(Long id) {
         Optional<CurrencyExchange> currencyExchange = repository.findById(id);
         if(!currencyExchange.isPresent()) {
@@ -49,21 +71,39 @@ public class CurrencyExchangeService {
         repository.delete(currencyExchange.get());
     }
 
+    /**
+     * saves a created currencyExchange to the database
+     * @param currencyExchange
+     * @return The Response of the creation operation
+     */
     public ResponseEntity<CurrencyExchange> createCurrencyExchange(CurrencyExchange currencyExchange) {
         CurrencyExchange currentCurrencyExchange = repository.find(currencyExchange.getFrom(),
                 currencyExchange.getTo());
-        ResponseEntity<CurrencyExchange> response = requestCurrencyExchange(currencyExchange, currentCurrencyExchange);
+        ResponseEntity<CurrencyExchange> response =
+                requestCurrencyExchange(currencyExchange,
+                currentCurrencyExchange);
         save(currencyExchange, response);
         return response;
     }
-
+    /**
+     * updates an existing  currencyExchange
+     * @param id the id of the CurrencyExchange
+     * @param conversionMultiple the new conversionMultiple
+     * @return The Response of the creation operation
+     */
     public ResponseEntity<CurrencyExchange> updateCurrencyExchange(Long id,BigDecimal conversionMultiple) {
         CurrencyExchange currencyExchange = repository.findById(id).orElse(null);
         ResponseEntity<CurrencyExchange> response = validateAndUpdate(conversionMultiple, currencyExchange);
         return response;
     }
 
-
+    /**
+     * updates an existing  currencyExchange
+     * @param from the from of the CurrencyExchange
+     * @param to the to of CurrencyExchange
+     * @param conversionMultiple the new conversionMultiple
+     * @return The Response of the update operation
+     */
     public ResponseEntity<CurrencyExchange> updateCurrencyExchange(String from, String to,
                                                                    BigDecimal conversionMultiple) {
         CurrencyExchange currencyExchange = repository.find(from,to);
@@ -71,13 +111,25 @@ public class CurrencyExchangeService {
         return response;
     }
 
+    /**
+     *
+     * @param currencyExchange the new CurrencyExchange to be created
+     * @param response
+     */
     private void save(CurrencyExchange currencyExchange, ResponseEntity<CurrencyExchange> response) {
         if (response.getStatusCode() == HttpStatus.CREATED){
             repository.save(currencyExchange);
         }
     }
 
-
+    /**
+     *
+     * @param currencyExchange the currency exchange to be created
+     * @param currentCurrencyExchange the existing currencyExchange with the same values
+     *                                is null if it doesn't exist
+     *
+     * @return The Response of the created CurrencyExchange
+     */
     private ResponseEntity<CurrencyExchange> requestCurrencyExchange(CurrencyExchange currencyExchange, CurrencyExchange currentCurrencyExchange) {
         ResponseEntity<CurrencyExchange> response = requestService.
                 makeCurrencyExchangeCreatedResponse(currencyExchange,
@@ -85,7 +137,12 @@ public class CurrencyExchangeService {
         return response;
     }
 
-
+    /**
+     *
+     * @param conversionMultiple the new Conversion Multiple
+     * @param currencyExchange the currencyExchange to update
+     * @return
+     */
     private ResponseEntity<CurrencyExchange> validateAndUpdate(BigDecimal conversionMultiple, CurrencyExchange currencyExchange) {
         ResponseEntity<CurrencyExchange> response = requestService.updateResponse(currencyExchange, conversionMultiple);
         if (response.getStatusCode() == HttpStatus.ACCEPTED) {
@@ -94,6 +151,12 @@ public class CurrencyExchangeService {
         return response;
     }
 
+    /**
+     * final call to the repository for saving the updated
+     * CurrencyExchange it is assumed that the update was successful
+     * @param conversionMultiple the new conversionMultiple
+     * @param currencyExchange the currencyExchange to modify
+     */
     private void doUpdate(BigDecimal conversionMultiple,
                                                       CurrencyExchange currencyExchange) {
         currencyExchange.setConversionMultiple(conversionMultiple);
@@ -105,6 +168,12 @@ public class CurrencyExchangeService {
         currencyExchange.setEnvironment(port);
     }
 
+    /**
+     *
+      * @param from
+     * @param to
+     * @return the CurrencyExchange from the database that matches with to and from
+     */
     private CurrencyExchange getCurrencyExchange(String from, String to) {
         CurrencyExchange currencyExchange = repository.find(from, to);
         if (currencyExchange == null) {

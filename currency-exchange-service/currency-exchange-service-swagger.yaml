@@ -1,0 +1,191 @@
+swagger: "2.0"
+info:
+  description: "This is a sample ExchangeCurrency server"
+  title: "Currency Exchange Service"
+  termsOfService: "WWW.EXC.MET"
+  contact:
+    email: "ignacio.galvez@accenture.com"
+  version: 1.0.0
+host: "currency-exchange.io"
+basePath: "/v1"
+tags:
+- name: "exchange"
+  description: "Manipulation of currency exchanges"
+
+schemes:
+- "http"
+paths:
+    /currency-exchange/:
+        post:
+          tags:
+            - "exchange"
+          summary: "creates a new ExchangeCurrency"
+          description: ""
+          operationId: ""
+          parameters:
+            - in: body
+              name: body
+              description: "the currency from wich converts"
+              required: true
+              schema:
+                $ref: "#/definitions/CurrencyExchange"
+          responses:
+            "400":
+              description: " currencyExchange has been previosly created"
+            "201":
+              description: "created"
+    /currency-exchange/all/:
+        get:
+            summary: "displays all existing currency exchanges available"
+            tags:
+            - "exchange"
+            description: ""
+            operationId: ""
+            consumes: 
+              - ""
+            produces:
+              - "application/json"
+            responses:
+                "404":
+                  description: "not found"
+                "200":
+                  description: "OK"
+    /currency-exchange/from/{from}/to/{to}:      
+      get:
+          summary: "display the currencyExchange value from currency from to currency to"
+          tags:
+          - "exchange"
+          parameters:
+            - in: path
+              name: from
+              description: "the currency from wich converts"
+              required: true
+              type: string
+            - in: path
+              name: to
+              description: "the currency converted to"
+              required: true
+              type: string
+          description: ""
+          operationId: ""
+          consumes: 
+            - ""
+          produces:
+            - "application/json"
+          responses:
+                "404":
+                  description: "not found"
+                "200":
+                  description: "Ok"
+    
+      delete:
+          tags:
+            - "exchange"
+          summary: "deletes an existing currency"
+          description: ""
+          operationId: ""
+          parameters:
+            - in: path
+              name: from
+              description: "the currency from wich converts"
+              required: true
+              type: string
+            - in: path
+              name: to
+              description: "the currency converted to"
+              required: true
+              type: string
+          responses:
+            "500":
+              description: "currency exchange does not exist"
+            "200":
+              description: "OK"
+              
+    /currency-exchange/from/{from}/to/{to}/conversionMultiple/{conversionMultiple}:      
+      post:
+          tags:
+            - "exchange"
+          summary: "creates a new ExchangeCurrency"
+          description: ""
+          operationId: ""
+          parameters:
+            - in: path
+              name: from
+              description: "the currency from wich converts"
+              required: true
+              type: string
+            - in: path
+              name: to
+              description: "the currency converted to"
+              required: true
+              type: string
+            - in: path
+              name: conversionMultiple
+              description: "the currency exchange value"
+              required: true
+              type: number
+          responses:
+            "400":
+              description: " currencyExchange has been previosly created"
+            "201":
+              description: "created"
+        put:
+          tags:
+            - "exchange"
+          summary: "updates an Existing CurrencyExchange"
+          description: ""
+          operationId: ""
+          parameters:
+            - in: path
+              name: from
+              description: "the currency from wich converts"
+              required: true
+              type: string
+            - in: path
+              name: to
+              description: "the currency converted to"
+              required: true
+              type: string
+            - in: path
+              name: conversionMultiple
+              description: "currency exchange value"
+              required: true
+              type: number
+          responses:
+            "400":
+              description: " currencyExchange does not exists"
+            "202":
+              description: "accepted"
+    /currency-exchange/id/{id}/conversionMultiple/{conversionMultiple}:
+        put:
+          tags:
+            - "exchange"
+          summary: "updates an Existing CurrencyExchange"
+          description: ""
+          operationId: ""
+          parameters:
+            - in: path
+              name: id
+              description: "id of the currencyExchange to modify"
+              required: true
+              type: string
+            - in: path
+              name: conversionMultiple
+              description: "currency exchange value"
+              required: true
+              type: number
+          responses:
+            "400":
+              description: " currencyExchange does not exists"
+            "202":
+              description: "accepted"    
+definitions:
+    CurrencyExchange:
+      type: "object"
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+        conversionMultiple:
+          type: number

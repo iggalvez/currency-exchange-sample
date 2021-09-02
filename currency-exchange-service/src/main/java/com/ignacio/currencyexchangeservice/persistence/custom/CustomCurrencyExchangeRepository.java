@@ -34,13 +34,13 @@ public class CustomCurrencyExchangeRepository implements IRepository<CurrencyExc
      * @param args must consist on two Strings the first one is from
      *             and the second is the to
      */
-    public CurrencyExchange find(String... args) {
+    public Optional<CurrencyExchange> find(String... args) {
         String queryString =
                 "from CurrencyExchange where currency_from="
                         + "\'" + args[0] + "\' and " + "currency_to=" + "\'" + args[1] + "\'";
         try {
             CurrencyExchange result = (CurrencyExchange) entityManager.createQuery(queryString).getSingleResult();
-            return result;
+            return Optional.of(result);
         } catch (NoResultException nre) {
             return null;
         }

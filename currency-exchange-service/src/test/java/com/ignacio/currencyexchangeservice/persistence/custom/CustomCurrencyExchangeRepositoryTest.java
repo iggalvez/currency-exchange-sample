@@ -63,7 +63,7 @@ public class CustomCurrencyExchangeRepositoryTest {
         when(query.getSingleResult()).thenReturn(usdToInrCurrencyExchange);
         assertEquals(usdToInrCurrencyExchange,
                 repository.find(usdToInrCurrencyExchange.getFrom(),
-                usdToInrCurrencyExchange.getTo()));
+                usdToInrCurrencyExchange.getTo()).get());
     }
 
     @Test

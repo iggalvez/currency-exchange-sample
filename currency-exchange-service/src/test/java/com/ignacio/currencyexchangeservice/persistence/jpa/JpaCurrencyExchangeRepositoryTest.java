@@ -63,7 +63,7 @@ public class JpaCurrencyExchangeRepositoryTest {
                 .thenReturn(usdToInrCurrencyExchange);
         Assertions.assertEquals(usdToInrCurrencyExchange,
                 jpaCurrencyExchangeRepository
-                .find(from,to));
+                .find(from,to).get());
     }
 
     @Test

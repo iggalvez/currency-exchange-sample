@@ -27,18 +27,16 @@ public class CurrencyExchangeRequestService {
     /**
      *
      * @param newCurrencyExchange to be created
-     * @param currentCurrencyExchange if it is null then the creation succeeds if not the
+     * @param isAlreadyCreated if it is null then the creation succeeds if not the
      *                                there's an existing CurrencyExchange with the newCurrencyExchange
      *                                values in the database
      * @param conversionMultiple      the new ConversionMultiple to be validated
      * @return
      */
     public ResponseEntity<CurrencyExchange> makeCurrencyExchangeCreatedResponse
-            (CurrencyExchange newCurrencyExchange, CurrencyExchange currentCurrencyExchange,
+            (CurrencyExchange newCurrencyExchange, Boolean isAlreadyCreated,
              BigDecimal conversionMultiple) {
-        if (!requestValidatorService
-                .validateRequestConversionCreation(conversionMultiple,
-                currentCurrencyExchange)) {
+        if (isAlreadyCreated || requestValidatorService.validateConversionMultiple(conversionMultiple)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return doReturnCurrencyExchangeCreated(newCurrencyExchange);
@@ -46,14 +44,14 @@ public class CurrencyExchangeRequestService {
 
     /**
      *
-     * @param currencyExchange the currency to update if is not present
+     * @param currencyExchangeExists the currency to update if is not present
      *                         in the database is null
      * @param conversionMultiple the new conversionMultiple
      * @return
      */
-    public ResponseEntity<CurrencyExchange> updateResponse(CurrencyExchange currencyExchange,
+    public ResponseEntity<CurrencyExchange> updateResponse(boolean currencyExchangeExists,
                                                            BigDecimal conversionMultiple) {
-        if (!requestValidatorService.currencyExchangeExists(currencyExchange)) {
+        if (!currencyExchangeExists) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         if (!requestValidatorService.validateConversionMultiple(conversionMultiple)) {

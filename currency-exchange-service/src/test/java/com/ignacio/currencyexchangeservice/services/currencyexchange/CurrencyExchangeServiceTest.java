@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -83,7 +84,7 @@ public class CurrencyExchangeServiceTest {
     }
 
     @Test
-    public void retrieveExchangeCurrencyStatusTest() throws Exception {
+    public void retrieveCurrencyExchangeStatusReturnsOkTest() throws Exception {
         String from = "USD";
         String to ="INR";
         when(environment.
@@ -91,7 +92,7 @@ public class CurrencyExchangeServiceTest {
                                 .LOCAL_SERVER_PORT)).
                 thenReturn("8001");
         when(repositoryMock.find(from,to))
-                .thenReturn(usdToInrCurrencyExchange);
+                .thenReturn(Optional.of(usdToInrCurrencyExchange));
         when(requestService.findOk(usdToInrCurrencyExchange))
                 .thenReturn(ResponseEntity.ok()
                         .body(usdToInrCurrencyExchange));
@@ -125,11 +126,11 @@ public class CurrencyExchangeServiceTest {
 
     private void requestServiceExpectedBehavior(CurrencyExchange currencyExchange) {
         when(requestService.makeCurrencyExchangeCreatedResponse(currencyExchange,
-                        null,
+                        false,
                         currencyExchange.getConversionMultiple())).
                 thenReturn(new ResponseEntity<>(HttpStatus.CREATED));
         when(requestService.makeCurrencyExchangeCreatedResponse(currencyExchange,
-                        currencyExchange,
+                        true,
                         currencyExchange.getConversionMultiple())).
                 thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
@@ -138,7 +139,8 @@ public class CurrencyExchangeServiceTest {
                                               CurrencyExchange currentCurrencyExchange) {
         when(repositoryMock.find(newCurrencyExchange.getFrom(),
                         newCurrencyExchange.getTo()))
-                .thenReturn(currentCurrencyExchange);
+                .thenReturn(currentCurrencyExchange == null ? Optional.empty():
+                        Optional.of(currentCurrencyExchange));
     }
 }
 

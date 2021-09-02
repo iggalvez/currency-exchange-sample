@@ -61,44 +61,34 @@ public class CurrencyExchangeRequestServiceTest {
     @Test
     public void NonExistingCurrencyExchangeShouldReturnNotFound() {
         BigDecimal conversionMultiple = BigDecimal.TEN;
-        Mockito.when(requestValidatorService.currencyExchangeExists(null))
-                .thenReturn(false);
         Mockito.when(requestValidatorService.validateConversionMultiple(conversionMultiple)).
                 thenReturn(true);
         assertEquals(HttpStatus.NOT_FOUND, requestService
-                .updateResponse(null, conversionMultiple).getStatusCode());
+                .updateResponse(false, conversionMultiple).getStatusCode());
     }
     @Test
     public void existingCurrencyExchangeAndWrongMultipleConversionShouldReturnBadRequest() {
         BigDecimal conversionMultiple = BigDecimal.valueOf(-100);
-        Mockito.when(requestValidatorService.currencyExchangeExists(arsToUsdCurrencyExchange))
-                .thenReturn(true);
         Mockito.when(requestValidatorService.validateConversionMultiple(conversionMultiple))
                 .thenReturn(false);
 
-        assertEquals(HttpStatus.BAD_REQUEST, requestService.updateResponse(arsToUsdCurrencyExchange, conversionMultiple).getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, requestService.updateResponse(true,conversionMultiple).getStatusCode());
     }
 
     @Test
     public void existingCurrencyExchangeShouldReturnAccepted() {
         BigDecimal conversionMultiple = BigDecimal.TEN;
-        Mockito.when(requestValidatorService.currencyExchangeExists(arsToUsdCurrencyExchange))
-                .thenReturn(true);
         Mockito.when(requestValidatorService.validateConversionMultiple(conversionMultiple))
                 .thenReturn(true);
-        assertEquals(HttpStatus.ACCEPTED, requestService.updateResponse(arsToUsdCurrencyExchange, conversionMultiple).getStatusCode());
+        assertEquals(HttpStatus.ACCEPTED, requestService.updateResponse(true, conversionMultiple).getStatusCode());
     }
 
 
     @Test
     public void createAnExistingCurrencyExchangeShouldReturnBadRequest() {
-        Mockito.when(requestValidatorService.validateRequestConversionCreation(usdToInrCurrencyExchange.getConversionMultiple(),
-                usdToInrCurrencyExchange)).thenReturn(false);
-
-
         ResponseEntity<CurrencyExchange> response = requestService
                 .makeCurrencyExchangeCreatedResponse(usdToInrCurrencyExchange,
-                        usdToInrCurrencyExchange,
+                        true,
                 usdToInrCurrencyExchange.getConversionMultiple());
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }

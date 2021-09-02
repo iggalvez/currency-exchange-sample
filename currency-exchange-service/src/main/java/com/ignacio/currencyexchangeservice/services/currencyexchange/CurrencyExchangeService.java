@@ -76,15 +76,25 @@ public class CurrencyExchangeService {
      * @param currencyExchange
      * @return The Response of the creation operation
      */
-    public ResponseEntity<CurrencyExchange> createCurrencyExchange(CurrencyExchange currencyExchange) {
-        CurrencyExchange currentCurrencyExchange = repository.find(currencyExchange.getFrom(),
-                currencyExchange.getTo());
+    public ResponseEntity<CurrencyExchange> createCurrencyExchange(CurrencyExchange currencyExchange) throws RuntimeException {
+
+        validateCurrencyExchangeInput(currencyExchange);
+
+        Boolean isAlreadyCreated = repository.find(currencyExchange.getFrom(),
+                currencyExchange.getTo()).isPresent();
         ResponseEntity<CurrencyExchange> response =
                 requestCurrencyExchange(currencyExchange,
-                currentCurrencyExchange);
+                isAlreadyCreated);
         save(currencyExchange, response);
         return response;
     }
+
+    private void validateCurrencyExchangeInput(CurrencyExchange currencyExchange) {
+        if (currencyExchange == null|| currencyExchange.getConversionMultiple().doubleValue() < 0){
+            throw new RuntimeException("CurrencyExchange json malformed");
+        }
+    }
+
     /**
      * updates an existing  currencyExchange
      * @param id the id of the CurrencyExchange
@@ -93,7 +103,7 @@ public class CurrencyExchangeService {
      */
     public ResponseEntity<CurrencyExchange> updateCurrencyExchange(Long id,BigDecimal conversionMultiple) {
         CurrencyExchange currencyExchange = repository.findById(id).orElse(null);
-        ResponseEntity<CurrencyExchange> response = validateAndUpdate(conversionMultiple, currencyExchange);
+        ResponseEntity<CurrencyExchange> response = validateAndUpdate(conversionMultiple,Optional.of(currencyExchange));
         return response;
     }
 
@@ -106,7 +116,7 @@ public class CurrencyExchangeService {
      */
     public ResponseEntity<CurrencyExchange> updateCurrencyExchange(String from, String to,
                                                                    BigDecimal conversionMultiple) {
-        CurrencyExchange currencyExchange = repository.find(from,to);
+        Optional<CurrencyExchange> currencyExchange = repository.find(from,to);
         ResponseEntity<CurrencyExchange> response = validateAndUpdate(conversionMultiple, currencyExchange);
         return response;
     }
@@ -125,15 +135,15 @@ public class CurrencyExchangeService {
     /**
      *
      * @param currencyExchange the currency exchange to be created
-     * @param currentCurrencyExchange the existing currencyExchange with the same values
+     * @param isAlreadyCreated the existing currencyExchange with the same values
      *                                is null if it doesn't exist
      *
      * @return The Response of the created CurrencyExchange
      */
-    private ResponseEntity<CurrencyExchange> requestCurrencyExchange(CurrencyExchange currencyExchange, CurrencyExchange currentCurrencyExchange) {
+    private ResponseEntity<CurrencyExchange> requestCurrencyExchange(CurrencyExchange currencyExchange, Boolean isAlreadyCreated) {
         ResponseEntity<CurrencyExchange> response = requestService.
                 makeCurrencyExchangeCreatedResponse(currencyExchange,
-                        currentCurrencyExchange, currencyExchange.getConversionMultiple());
+                        isAlreadyCreated, currencyExchange.getConversionMultiple());
         return response;
     }
 
@@ -143,10 +153,10 @@ public class CurrencyExchangeService {
      * @param currencyExchange the currencyExchange to update
      * @return
      */
-    private ResponseEntity<CurrencyExchange> validateAndUpdate(BigDecimal conversionMultiple, CurrencyExchange currencyExchange) {
-        ResponseEntity<CurrencyExchange> response = requestService.updateResponse(currencyExchange, conversionMultiple);
+    private ResponseEntity<CurrencyExchange> validateAndUpdate(BigDecimal conversionMultiple, Optional<CurrencyExchange> currencyExchange) {
+        ResponseEntity<CurrencyExchange> response = requestService.updateResponse(currencyExchange.isPresent(), conversionMultiple);
         if (response.getStatusCode() == HttpStatus.ACCEPTED) {
-            doUpdate(conversionMultiple, currencyExchange);
+            doUpdate(conversionMultiple,currencyExchange.get());
         }
         return response;
     }
@@ -175,11 +185,11 @@ public class CurrencyExchangeService {
      * @return the CurrencyExchange from the database that matches with to and from
      */
     private CurrencyExchange getCurrencyExchange(String from, String to) {
-        CurrencyExchange currencyExchange = repository.find(from, to);
-        if (currencyExchange == null) {
+        Optional<CurrencyExchange> currencyExchange = repository.find(from, to);
+        if (!currencyExchange.isPresent()) {
             throw new RuntimeException("currencyExchange from " + from + " to  "+ to + " not found" );
         }
-        return currencyExchange;
+        return currencyExchange.get();
     }
 
     private void setEnvironmentPortToAll( List<CurrencyExchange> currencyExchangeList) {

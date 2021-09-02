@@ -21,9 +21,9 @@ public class JpaCurrencyExchangeRepository implements IRepository<CurrencyExchan
     private CurrencyExchangeRepository repository;
 
     @Override
-    public CurrencyExchange find(String... args) {
-        return repository.findByFromAndTo(args[0],
-                args[1]);
+    public Optional<CurrencyExchange> find(String... args) {
+        return Optional.of(repository.findByFromAndTo(args[0],
+                args[1]));
     }
 
     @Override
